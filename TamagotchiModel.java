@@ -1,5 +1,6 @@
+import java.util.Observable;
 
-public class TamagotchiModel {
+public class TamagotchiModel extends Observable{
 	
 	// Name of the tamagotchi
 	String name;
