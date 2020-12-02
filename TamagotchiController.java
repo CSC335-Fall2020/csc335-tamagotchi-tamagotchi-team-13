@@ -25,6 +25,37 @@ public class TamagotchiController {
 		return model.decreaseHealth(healthToDecrease);
 	}
 	
+	public String getAgeDescription() {
+		return "Age: " + model.getAge();
+	}
 	
+	public String getHealthDescription() {
+		int health = model.getHealth();
+		String descr = "";
+		if (health>=50) {
+			descr = "(Healthy)";
+		} else {
+			descr = "(Sick)";
+		}
+		return "" + health + " " + descr;
+	}
+	
+	public String getWeightDescription() {
+		
+		int weight = model.getWeight();
+		String descr = "";
+		if (weight>=75) {
+			descr = "(Obese)";
+		} else if (weight >50) {
+			descr = "(Overweight)";
+		} else if (weight==50) {
+			descr = "(Perfect)";
+		} else if (weight>=25) {
+			descr = "(Underweight)";
+		} else {
+			descr = "(Malnourished)";
+		}
+		return "" + weight + descr;
+	}
 	
 }
