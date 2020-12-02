@@ -143,17 +143,6 @@ public class TamagotchiView extends Application implements Observer{
 		return newScene;
 	}
 	
-	private class GameFX{
-		private final BorderPane rootPane;
-		public GameFX() {
-			rootPane = new BorderPane();
-		}
-		
-		public BorderPane getRootPane() {
-	        return rootPane ;
-	    }
-	}
-	
 	/*
 	 * GUI retieve name from user (onboarding)
 	 */
