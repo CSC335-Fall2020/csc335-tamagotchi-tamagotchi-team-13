@@ -55,7 +55,21 @@ public class TamagotchiController {
 		} else {
 			descr = "(Malnourished)";
 		}
-		return "" + weight + descr;
+		return "" + weight + " " + descr;
+	}
+	
+	public String getHappinessDescription() {
+		
+		int happiness = model.getHappiness();
+		String descr = "";
+		if (happiness >= 75) {
+			descr = "(Happy)";
+		} else if (happiness >= 25) {
+			descr = "(Okay)";
+		} else {
+			descr = "(Unhappy)";
+		}
+		return "" + happiness + " " + descr;
 	}
 	
 }
