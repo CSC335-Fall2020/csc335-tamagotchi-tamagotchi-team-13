@@ -3,8 +3,8 @@ public class TamagotchiController {
 	
 	private TamagotchiModel model;
 	
-	public TamagotchiController(TamagotchiModel game) {
-		model = game;
+	public TamagotchiController(TamagotchiModel model) {
+		this.model = model;
 	}
 	
 	/**
