@@ -101,6 +101,8 @@ public class TamagotchiView extends Application implements Observer{
 			health.setFill(Color.RED);
 		}
 		
+		ageText.setText("Age: " + Integer.toString(age));
+		
 	}
 
 	@Override
