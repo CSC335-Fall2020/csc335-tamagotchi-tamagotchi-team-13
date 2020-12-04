@@ -3,19 +3,19 @@ import java.util.Observable;
 public class TamagotchiModel extends Observable{
 	
 	// Name of the tamagotchi
-	String name;
+	private String name;
 	
 	// Age, starting at 0 and increasing
-	int age;
+	private int age;
 	
-	// Health, starting at 100 and decreasing
-	int health;
+	// Health, starting at 100. Above 50 is healthy
+	private int health;
 	
 	// Weight, starting at 50 (healthy). 100 (Obese), 0 (Starved)
-	int weight;
+	private int weight;
 	
 	// Happiness, starting at 75 (mostly happy). 100 (Very happy), 0 (Suicide)
-	int happiness;
+	private int happiness;
 	
 	/**
 	 * Default constructor with standard values
@@ -68,8 +68,32 @@ public class TamagotchiModel extends Observable{
 		return health;
 	}
 	
+	/**
+	 * Returns whether or not the tamagotchi is dead.
+	 * @return is the boolean described above.
+	 */
 	public boolean isDead() {
 		return health>0 && weight>0 && weight<100 && happiness>0;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public int getAge() {
+		return age;
+	}
+
+	public int getHealth() {
+		return health;
+	}
+
+	public int getWeight() {
+		return weight;
+	}
+
+	public int getHappiness() {
+		return happiness;
 	}
 
 }
