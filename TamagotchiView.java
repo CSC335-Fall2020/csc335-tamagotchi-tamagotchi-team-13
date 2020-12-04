@@ -3,6 +3,8 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Optional;
+
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -11,6 +13,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -130,6 +135,44 @@ public class TamagotchiView extends Application implements Observer{
 		allMechanics.setPadding(new Insets(0,5,30,210));
 		allMechanics.setSpacing(10);
 		
+		pause.setOnMouseClicked(e ->{
+			//stops the timer from the threading
+			//pops up alert box to either save game/resume game/ quit game
+			ButtonType saveGame = new ButtonType("Save Game", 
+					ButtonBar.ButtonData.OK_DONE);
+			ButtonType resumeGame = new ButtonType("Resume Game", 
+					ButtonBar.ButtonData.BACK_PREVIOUS);
+			ButtonType quitGame = new ButtonType("Quit Game", 
+					ButtonBar.ButtonData.CANCEL_CLOSE);
+			
+			Alert alert = new Alert(AlertType.INFORMATION,"", 
+					resumeGame,saveGame,quitGame);
+			
+			alert.setTitle("Pause Menu");
+			alert.setHeaderText("Pause Menu");
+			
+			Optional<ButtonType> result = alert.showAndWait();
+			
+			if(result.get() == saveGame) {
+				
+			} else if(result.get() == resumeGame) {
+				
+			} else {
+				
+			}
+		});
+		
+		feedSnacks.setOnMouseClicked(e ->{
+			//increase the weight by alot and happiness but hunger alittle
+		});
+		
+		feedMeal.setOnMouseClicked(e ->{
+			//only increases weight by alittle and hunger alot
+		});
+
+		feedMedicine.setOnMouseClicked(e ->{
+			//increase hp
+		});
 		
 		setProgressBars(newRoot);
 		
@@ -232,9 +275,7 @@ public class TamagotchiView extends Application implements Observer{
 		happinessVBox.getChildren().addAll(happinessLabel, happinessPane);
 		happinessVBox.setPadding(new Insets(0, 100, 100, 0));
 		progressBars.getChildren().add(happinessVBox);
-		
-		// https://www.youtube.com/watch?v=5TIAmEoBNB0&ab_channel=Memebrace
-		
+				
 		progressBars.setPadding(new Insets(10.0, 10.0, 10.0, 50.0));
 		newRoot.getChildren().add(progressBars);
 	}
