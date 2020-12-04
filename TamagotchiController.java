@@ -3,8 +3,8 @@ public class TamagotchiController {
 	
 	private TamagotchiModel model;
 	
-	public TamagotchiController(TamagotchiModel game) {
-		model = game;
+	public TamagotchiController(TamagotchiModel model) {
+		this.model = model;
 	}
 	
 	/**
@@ -25,6 +25,51 @@ public class TamagotchiController {
 		return model.decreaseHealth(healthToDecrease);
 	}
 	
+	public String getAgeDescription() {
+		return "Age: " + model.getAge();
+	}
 	
+	public String getHealthDescription() {
+		int health = model.getHealth();
+		String descr = "";
+		if (health>=50) {
+			descr = "(Healthy)";
+		} else {
+			descr = "(Sick)";
+		}
+		return "" + health + " " + descr;
+	}
+	
+	public String getWeightDescription() {
+		
+		int weight = model.getWeight();
+		String descr = "";
+		if (weight>=75) {
+			descr = "(Obese)";
+		} else if (weight >50) {
+			descr = "(Overweight)";
+		} else if (weight==50) {
+			descr = "(Perfect)";
+		} else if (weight>=25) {
+			descr = "(Underweight)";
+		} else {
+			descr = "(Malnourished)";
+		}
+		return "" + weight + " " + descr;
+	}
+	
+	public String getHappinessDescription() {
+		
+		int happiness = model.getHappiness();
+		String descr = "";
+		if (happiness >= 75) {
+			descr = "(Happy)";
+		} else if (happiness >= 25) {
+			descr = "(Okay)";
+		} else {
+			descr = "(Unhappy)";
+		}
+		return "" + happiness + " " + descr;
+	}
 	
 }
