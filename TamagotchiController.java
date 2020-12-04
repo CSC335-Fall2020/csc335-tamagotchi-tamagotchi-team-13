@@ -1,3 +1,4 @@
+import java.util.concurrent.TimeUnit;
 
 public class TamagotchiController {
 	
@@ -25,6 +26,18 @@ public class TamagotchiController {
 		return model.decreaseHealth(healthToDecrease);
 	}
 	
+	public void feedPetSnacks() {
+		model.feedPetSnacks();
+	}
+	
+	public void feedPetMeal() {
+		model.feedPetMeal();
+	}
+	
+	public void giveMedicine() {
+		model.giveMedicine();
+	}
+
 	public String getAgeDescription() {
 		return "Age: " + model.getAge();
 	}
@@ -71,5 +84,52 @@ public class TamagotchiController {
 		}
 		return "" + happiness + " " + descr;
 	}
+	
+	public void pauseGame() {
+		model.pauseGame();
+	}
+	
+	public void unpauseGame() {
+		model.unpauseGame();
+	}
+	
+	public void startGame() {
+		
+		while(!model.isDead() && !model.isPause()) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+			    Thread.currentThread().interrupt();
+			}
+			
+			
+			
+		}
+		
+	}
+
+	public int getWeight() {
+		return model.getWeight();
+	}
+
+	public int getHealth() {
+		return model.getHealth();
+	}
+
+	public int getHappiness() {
+		return model.getHappiness();
+	}
+
+	public int getAge() {
+		return model.getAge();
+	}
+
+	public void petDies() {
+		model.petDies();
+	}
+
+
+
+
 	
 }
