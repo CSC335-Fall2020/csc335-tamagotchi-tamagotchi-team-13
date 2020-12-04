@@ -8,7 +8,7 @@ public class TamagotchiModel extends Observable{
 	// Age, starting at 0 and increasing
 	private int age;
 	
-	// Health, starting at 100. Above 50 is healthy
+	// Health, starting at 100. Above 60 is healthy
 	private int health;
 	
 	// Weight, starting at 50 (healthy). 100 (Obese), 10 (Starved)
@@ -75,6 +75,9 @@ public class TamagotchiModel extends Observable{
 	public void feedPetSnacks() {
 		weight+=5;
 		happiness+=5;
+		if(happiness>100) {
+			happiness=100;
+		}
 		setChanged();
 		notifyObservers();
 	}
@@ -87,6 +90,9 @@ public class TamagotchiModel extends Observable{
 	
 	public void giveMedicine() {
 		health+=10;
+		if(health>100) {
+			health = 100;
+		}
 		setChanged();
 		notifyObservers();
 	}
