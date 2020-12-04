@@ -11,11 +11,15 @@ public class TamagotchiModel extends Observable{
 	// Health, starting at 100. Above 50 is healthy
 	private int health;
 	
-	// Weight, starting at 50 (healthy). 100 (Obese), 0 (Starved)
+	// Weight, starting at 50 (healthy). 100 (Obese), 10 (Starved)
 	private int weight;
 	
-	// Happiness, starting at 75 (mostly happy). 100 (Very happy), 0 (Suicide)
+	// Happiness, starting at 75 (mostly happy). 100 (Very happy), 0 (Depressed)
 	private int happiness;
+	
+	private boolean alive = true;
+	
+	private boolean paused = false;
 	
 	/**
 	 * Default constructor with standard values
@@ -68,12 +72,32 @@ public class TamagotchiModel extends Observable{
 		return health;
 	}
 	
+	public void feedPetSnacks() {
+		weight+=5;
+		happiness+=5;
+		setChanged();
+		notifyObservers();
+	}
+	
+	public void feedPetMeal() {
+		weight+=2;
+		setChanged();
+		notifyObservers();
+	}
+	
+	public void giveMedicine() {
+		health+=10;
+		setChanged();
+		notifyObservers();
+	}
+	
 	/**
 	 * Returns whether or not the tamagotchi is dead.
 	 * @return is the boolean described above.
 	 */
 	public boolean isDead() {
-		return health>0 && weight>0 && weight<100 && happiness>0;
+		//return !(health>0 && weight>10 && weight<120 && happiness>0);
+		return !(alive);
 	}
 
 	public String getName() {
@@ -95,5 +119,27 @@ public class TamagotchiModel extends Observable{
 	public int getHappiness() {
 		return happiness;
 	}
+
+	public boolean pauseGame() {
+		paused = true;
+		return paused;
+	}
+	
+	public boolean unpauseGame() {
+		paused = false;
+		return paused;
+	}
+	
+	public boolean isPause() {
+		return paused;
+	}
+
+	public void petDies() {
+		alive = false;
+	}
+
+
+
+
 
 }

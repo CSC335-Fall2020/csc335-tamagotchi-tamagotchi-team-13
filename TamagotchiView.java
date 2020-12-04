@@ -39,9 +39,52 @@ public class TamagotchiView extends Application implements Observer{
 	TamagotchiController controller = new TamagotchiController(model);
 	BorderPane root = new BorderPane();
 	
+	Rectangle health = new Rectangle(200.0, 50.0, Color.GREEN);
+	Rectangle weight = new Rectangle(100.0, 50.0, Color.GREEN);
+	Rectangle happiness = new Rectangle(150.0, 50.0, Color.GREEN);
+	Text happinessText = new Text("75");
+	Text weightText = new Text("50");
+	Text heightText = new Text("100");
+	
 	@Override
 	public void update(Observable arg0, Object arg1) {
-		// TODO Auto-generated method stub
+		int age = controller.getAge();
+		int happyNum = controller.getHappiness();
+		int healthNum = controller.getHealth();
+		int weightNum = controller.getWeight();
+		
+		happinessText.setText(Integer.toString(happyNum));
+		heightText.setText(Integer.toString(healthNum));
+		weightText.setText(Integer.toString(weightNum));
+		
+		//health.setX();
+		if (weightNum<=105 && weightNum>=0) {
+			weight.setWidth(weightNum * 2);
+		} else if (weightNum <= 10 || weightNum >= 120) {
+			controller.petDies();
+		}
+		
+		if (weightNum<=60 && weightNum>=40) {
+			weight.setFill(Color.GREEN);
+		} else if ((weightNum<40 && weightNum>=20) || (weightNum>60 && weightNum<=80)) {
+			weight.setFill(Color.YELLOW);
+		} else {
+			weight.setFill(Color.RED);
+		}
+		
+		if (happyNum<=100 && happyNum>0) {
+			happiness.setWidth(happyNum * 2);
+		} else if (happyNum<=0) {
+			controller.petDies();
+		}
+		
+		if (happyNum>=65) {
+			happiness.setFill(Color.GREEN);
+		} else if (happyNum>=20) {
+			happiness.setFill(Color.YELLOW);
+		} else {
+			happiness.setFill(Color.RED);
+		}
 		
 	}
 
@@ -164,14 +207,17 @@ public class TamagotchiView extends Application implements Observer{
 		
 		feedSnacks.setOnMouseClicked(e ->{
 			//increase the weight by alot and happiness but hunger alittle
+			controller.feedPetSnacks();
 		});
 		
 		feedMeal.setOnMouseClicked(e ->{
 			//only increases weight by alittle and hunger alot
+			controller.feedPetMeal();
 		});
 
 		feedMedicine.setOnMouseClicked(e ->{
 			//increase hp
+			controller.giveMedicine();
 		});
 		
 		setProgressBars(newRoot);
@@ -197,6 +243,7 @@ public class TamagotchiView extends Application implements Observer{
 			try {
 				newScene = runGame(primaryStage);
 				primaryStage.setScene(newScene);
+				//controller.startGame();
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -245,8 +292,6 @@ public class TamagotchiView extends Application implements Observer{
 		VBox happinessVBox = new VBox();
 		// Health Bar
 		Rectangle healthBackground = new Rectangle(200.0, 50.0, Color.BLACK);
-		Rectangle health = new Rectangle(200.0, 50.0, Color.GREEN);
-		Text heightText = new Text("100");
 		heightText.setFont(Font.font("Impact", 35));
 		Text healthLabel = new Text("Health");
 		healthPane.getChildren().addAll(healthLabel, healthBackground, health, heightText);
@@ -256,8 +301,6 @@ public class TamagotchiView extends Application implements Observer{
 		
 		// Weight Bar
 		Rectangle weightBackground = new Rectangle(200.0, 50.0, Color.BLACK);
-		Rectangle weight = new Rectangle(200.0, 50.0, Color.GREEN);
-		Text weightText = new Text("100");
 		weightText.setFont(Font.font("Impact", 35));
 		Text weightLabel = new Text("Weight");
 		weightPane.getChildren().addAll(weightLabel, weightBackground, weight, weightText);
@@ -267,8 +310,6 @@ public class TamagotchiView extends Application implements Observer{
 		
 		// Happiness Bar
 		Rectangle happinessBackground = new Rectangle(200.0, 50.0, Color.BLACK);
-		Rectangle happiness = new Rectangle(200.0, 50.0, Color.GREEN);
-		Text happinessText = new Text("100");
 		happinessText.setFont(Font.font("Impact", 35));
 		Text happinessLabel = new Text("Happiness");
 		happinessPane.getChildren().addAll(happinessLabel, happinessBackground, happiness, happinessText);
@@ -279,5 +320,5 @@ public class TamagotchiView extends Application implements Observer{
 		progressBars.setPadding(new Insets(10.0, 10.0, 10.0, 50.0));
 		newRoot.getChildren().add(progressBars);
 	}
-
+	
 }
