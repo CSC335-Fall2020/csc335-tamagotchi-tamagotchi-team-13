@@ -45,6 +45,7 @@ public class TamagotchiView extends Application implements Observer{
 	Text happinessText = new Text("75");
 	Text weightText = new Text("50");
 	Text heightText = new Text("100");
+	Text ageText = new Text("Age: 0");
 	
 	@Override
 	public void update(Observable arg0, Object arg1) {
@@ -58,7 +59,7 @@ public class TamagotchiView extends Application implements Observer{
 		weightText.setText(Integer.toString(weightNum));
 		
 		//health.setX();
-		if (weightNum<=105 && weightNum>=0) {
+		if (weightNum<=100 && weightNum>=0) {
 			weight.setWidth(weightNum * 2);
 		} else if (weightNum <= 10 || weightNum >= 120) {
 			controller.petDies();
@@ -84,6 +85,20 @@ public class TamagotchiView extends Application implements Observer{
 			happiness.setFill(Color.YELLOW);
 		} else {
 			happiness.setFill(Color.RED);
+		}
+		
+		if (healthNum > 60) {
+			health.setWidth(healthNum * 2);
+		} else{
+			controller.petDies();
+		}
+		
+		if (healthNum > 60) {
+			health.setFill(Color.GREEN);
+		} else if (healthNum > 20) {
+			health.setFill(Color.YELLOW);
+		} else {
+			health.setFill(Color.RED);
 		}
 		
 	}
@@ -155,6 +170,9 @@ public class TamagotchiView extends Application implements Observer{
 	private Scene runGame(Stage primaryStage) throws Exception {
 		BorderPane newRoot = new BorderPane();
 		addBackground(newRoot);
+		VBox bottomHalf = new VBox();
+		VBox textContainer = new VBox();
+		VBox imgContainer = new VBox();
 		HBox allMechanics = new HBox();
 		Button feedSnacks = new Button("Feed Snacks");
 		Button feedMeal = new Button("Feed Meal");
@@ -178,6 +196,15 @@ public class TamagotchiView extends Application implements Observer{
 		allMechanics.setPadding(new Insets(0,5,30,210));
 		allMechanics.setSpacing(10);
 		
+		imgContainer.getChildren().add(mainView);
+		imgContainer.setPadding(new Insets(0,5,15,315));
+		
+		textContainer.getChildren().add(ageText);
+		ageText.setFont(Font.font("Impact", 35));
+		textContainer.setPadding(new Insets(0,0,15,400));
+		
+		bottomHalf.getChildren().addAll(imgContainer,textContainer,allMechanics);
+		
 		pause.setOnMouseClicked(e ->{
 			//stops the timer from the threading
 			//pops up alert box to either save game/resume game/ quit game
@@ -197,8 +224,6 @@ public class TamagotchiView extends Application implements Observer{
 			Optional<ButtonType> result = alert.showAndWait();
 			
 			if(result.get() == saveGame) {
-				
-			} else if(result.get() == resumeGame) {
 				
 			} else {
 				
@@ -223,8 +248,7 @@ public class TamagotchiView extends Application implements Observer{
 		setProgressBars(newRoot);
 		
 		newRoot.setTop(pause);
-		newRoot.setBottom(allMechanics);
-		newRoot.setCenter(mainView);
+		newRoot.setBottom(bottomHalf);
 		Scene newScene = new Scene(newRoot, WIDTH,HEIGHT);
 		return newScene;
 	}
