@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.Observable;
 import java.util.Scanner;
 
-import javafx.stage.FileChooser;
 
 public class TamagotchiModel extends Observable{
 	

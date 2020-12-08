@@ -6,7 +6,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class TamagotchiController extends Thread {
 	
 	private TamagotchiModel model;
-	
+	private final Object pauseLock = new Object();
 	private boolean paused = false;
 	
 	public TamagotchiController(TamagotchiModel model) {
@@ -101,14 +101,6 @@ public class TamagotchiController extends Thread {
 		}
 		return descr;
 	}
-	
-	public void pauseGame() {
-		model.pauseGame();
-	}
-	
-	public void unpauseGame() {
-		model.unpauseGame();
-	}
 
 	public int getWeight() {
 		return model.getWeight();
@@ -132,9 +124,35 @@ public class TamagotchiController extends Thread {
 	
 	public void run() {
 		int i = 0;
-		while(!model.isDead() && !paused) {
+		while(!model.isDead()) {
+			
+            synchronized (pauseLock) {
+            	if(model.isDead()) {
+            		break;
+            	}
+            	if(paused) {
+            		try {
+            			synchronized(pauseLock) {
+            				pauseLock.wait();
+            			}
+            		}
+            		catch (InterruptedException ex) {
+                        break;
+                    }
+                    if (model.isDead()){ // running might have changed since we paused
+                        break;
+                    }
+            	}
+            }
+
+			
 			try {
 				Thread.sleep(1000);
+				try {
+					model.save();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			} catch (InterruptedException e) {
 			    Thread.currentThread().interrupt();
 			}
@@ -142,7 +160,6 @@ public class TamagotchiController extends Thread {
 			if(i % 5 == 0) {
 				model.increaseAge(1);
 			}
-			
 			int amtToDecreaseHealth = 2;
 			int amtToDecreaseHappiness = 1;
 			if(shouldGetSick()) {
@@ -156,6 +173,14 @@ public class TamagotchiController extends Thread {
 			i++;
 		}
 	}
+	
+	public void resumeGame() {
+        synchronized (pauseLock) {
+            paused = false;
+            pauseLock.notifyAll(); // Unblocks thread
+        }
+    }
+	
 	
 	/**
      * This function returns whether or not the character should get sick, 

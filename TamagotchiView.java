@@ -261,6 +261,7 @@ public class TamagotchiView extends Application implements Observer{
 		pause.setOnMouseClicked(e ->{
 			//stops the timer from the threading
 			//pops up alert box to either save game/resume game/ quit game
+			controller.pause();
 			ButtonType saveGame = new ButtonType("Save Game", 
 					ButtonBar.ButtonData.OK_DONE);
 			ButtonType resumeGame = new ButtonType("Resume Game", 
@@ -279,11 +280,15 @@ public class TamagotchiView extends Application implements Observer{
 			if(result.get() == saveGame) {
 				try {
 					controller.save();
+					controller.resumeGame();
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
-			}else if(result.get() == quitGame){
+			}else if(result.get() == quitGame){				
 				primaryStage.close();
+			}
+			else if(result.get() == resumeGame) {
+				controller.resumeGame();
 			}
 		});
 		
