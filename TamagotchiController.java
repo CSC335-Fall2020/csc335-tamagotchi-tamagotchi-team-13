@@ -1,6 +1,7 @@
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ThreadLocalRandom;
 
-public class TamagotchiController {
+
+public class TamagotchiController extends Thread {
 	
 	private TamagotchiModel model;
 	
@@ -13,17 +14,16 @@ public class TamagotchiController {
 	 * @param amtToIncreaseBy is the amount to increase the age by
 	 * @return the new age of the tamagotchi
 	 */
-	public int incrementAge(int ageToIncrease) {
-		return model.increaseAge(ageToIncrease);
+	public void incrementAge(int ageToIncrease) {
+		model.increaseAge(ageToIncrease);
 	}
 	
 	/**
 	 * Decreases the tamagotchi's health by the parameter amount
 	 * @param amtToDecreaseBy is the amount to decrease the health by
-	 * @return the new health of the tamagotchi
 	 */
-	public int decrementHealth(int healthToDecrease) {
-		return model.decreaseHealth(healthToDecrease);
+	public void decrementHealth(int healthToDecrease) {
+		model.decreaseHealth(healthToDecrease);
 	}
 	
 	public void feedPetSnacks() {
@@ -36,6 +36,7 @@ public class TamagotchiController {
 	
 	public void giveMedicine() {
 		model.giveMedicine();
+		model.setSick(false);
 	}
 
 	public String getAgeDescription() {
@@ -45,12 +46,16 @@ public class TamagotchiController {
 	public String getHealthDescription() {
 		int health = model.getHealth();
 		String descr = "";
-		if (health>=50) {
+		if (health>=60) {
 			descr = "(Healthy)";
-		} else {
-			descr = "(Sick)";
+		} else if(health>=20){
+			descr = "(Ok)";
 		}
-		return "" + health + " " + descr;
+		else {
+			descr = "(Sick)";
+			model.setSick(true);
+		}
+		return descr;
 	}
 	
 	public String getWeightDescription() {
@@ -68,21 +73,21 @@ public class TamagotchiController {
 		} else {
 			descr = "(Malnourished)";
 		}
-		return "" + weight + " " + descr;
+		return descr;
 	}
 	
 	public String getHappinessDescription() {
 		
 		int happiness = model.getHappiness();
 		String descr = "";
-		if (happiness >= 75) {
+		if (happiness >= 65) {
 			descr = "(Happy)";
-		} else if (happiness >= 25) {
+		} else if (happiness >= 20) {
 			descr = "(Okay)";
 		} else {
 			descr = "(Unhappy)";
 		}
-		return "" + happiness + " " + descr;
+		return descr;
 	}
 	
 	public void pauseGame() {
@@ -91,21 +96,6 @@ public class TamagotchiController {
 	
 	public void unpauseGame() {
 		model.unpauseGame();
-	}
-	
-	public void startGame() {
-		
-		while(!model.isDead() && !model.isPause()) {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-			    Thread.currentThread().interrupt();
-			}
-			
-			
-			
-		}
-		
 	}
 
 	public int getWeight() {
@@ -127,9 +117,80 @@ public class TamagotchiController {
 	public void petDies() {
 		model.petDies();
 	}
-
-
-
-
 	
+	public void run() {
+		int i = 0;
+		while(!model.isDead() && !model.isPause()) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+			    Thread.currentThread().interrupt();
+			}
+			
+			if(i % 5 == 0) {
+				model.increaseAge(1);
+			}
+			
+			int amtToDecreaseHealth = 2;
+			int amtToDecreaseHappiness = 1;
+			if(shouldGetSick()) {
+				amtToDecreaseHealth += 15;
+				amtToDecreaseHappiness += 30;
+			}
+			
+			model.decreaseHealth(amtToDecreaseHealth);
+			model.decreaseHappiness(amtToDecreaseHappiness);
+			model.decreaseWeight(1);
+			i++;
+		}
+	}
+	
+	/**
+     * This function returns whether or not the character should get sick, 
+     * based on the character's health, happiness, and weight.
+     * @return
+     */
+    private boolean shouldGetSick() {
+
+        if (model.getHealth()<30) {
+            return true;
+        }
+
+        int chancePool = 15;
+
+        // Increase likelihood when over/under weight
+        if (model.getWeight() > 60 || model.getWeight() < 40) {
+            chancePool-=5;
+        }
+
+        // Increase likelihood when unhappy
+        if (model.getHappiness()<30) {
+            chancePool-=5;
+        }
+
+        // Catch low values
+        if (chancePool<2) {
+            chancePool = 2;
+        }
+
+        // Draw random from pool. If is 1, gets sick (returns true)
+        return ThreadLocalRandom.current().nextInt(0, chancePool) == 1;
+    }
+
+	public void setPet(String pet, String sadPet) {
+		model.setPet(pet, sadPet);
+	}
+
+	public String getSadPet() {
+		return model.getSadPet();
+	}
+
+	public String getPet() {
+		return model.getPet();
+	}
+
+	@SuppressWarnings("deprecation")
+	public void stopThread() {
+		this.stop();
+	}
 }

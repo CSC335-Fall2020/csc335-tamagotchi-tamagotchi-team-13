@@ -21,11 +21,16 @@ public class TamagotchiModel extends Observable{
 	
 	private boolean paused = false;
 	
+	private boolean sick = false;
+	
+	private String pet;
+	private String sadPet;
+	
 	/**
 	 * Default constructor with standard values
 	 */
 	public TamagotchiModel() {
-		this("Unnamed", 1, 100, 50, 75);
+		this("Unnamed", 0, 100, 50, 75);
 	}
 	
 	/**
@@ -33,7 +38,7 @@ public class TamagotchiModel extends Observable{
 	 * @param name is the name of the new tamagotchi
 	 */
 	public TamagotchiModel(String name) {
-		this(name, 1, 100, 50, 75);
+		this(name, 0, 100, 50, 75);
 	}
 	
 	/**
@@ -57,9 +62,10 @@ public class TamagotchiModel extends Observable{
 	 * @param amtToIncreaseBy is the amount to increase the age by
 	 * @return the new age of the tamagotchi
 	 */
-	public int increaseAge(int amtToIncreaseBy) {
+	public void increaseAge(int amtToIncreaseBy) {
 		age += amtToIncreaseBy;
-		return age;
+		setChanged();
+		notifyObservers();
 	}
 	
 	/**
@@ -67,9 +73,10 @@ public class TamagotchiModel extends Observable{
 	 * @param amtToDecreaseBy is the amount to decrease the health by
 	 * @return the new health of the tamagotchi
 	 */
-	public int decreaseHealth(int amtToDecreaseBy) {
-		health -= amtToDecreaseBy;
-		return health;
+	public void decreaseHealth(int amtToDecreaseBy) {
+		health -= amtToDecreaseBy;	
+		setChanged();
+		notifyObservers();
 	}
 	
 	public void feedPetSnacks() {
@@ -93,6 +100,18 @@ public class TamagotchiModel extends Observable{
 		if(health>100) {
 			health = 100;
 		}
+		setChanged();
+		notifyObservers();
+	}
+	
+	public void decreaseWeight(int decreaseAmount) {
+		weight -= decreaseAmount;
+		setChanged();
+		notifyObservers();
+	}
+	
+	public void decreaseHappiness(int amtToDecreaseHappiness) {
+		happiness -= amtToDecreaseHappiness;
 		setChanged();
 		notifyObservers();
 	}
@@ -125,6 +144,10 @@ public class TamagotchiModel extends Observable{
 	public int getHappiness() {
 		return happiness;
 	}
+	
+	public boolean isSick() {
+		return sick;
+	}
 
 	public boolean pauseGame() {
 		paused = true;
@@ -144,8 +167,21 @@ public class TamagotchiModel extends Observable{
 		alive = false;
 	}
 
+	public void setSick(boolean b) {
+		sick = b;
+	}
 
+	public void setPet(String pet, String sadPet) {
+		this.pet = pet;
+		this.sadPet = sadPet;
+	}
 
+	public String getSadPet() {
+		return sadPet;
+	}
 
+	public String getPet() {
+		return pet;
+	}
 
 }
