@@ -59,12 +59,7 @@ public class TamagotchiView extends Application implements Observer{
 		int happyNum = controller.getHappiness();
 		int healthNum = controller.getHealth();
 		int weightNum = controller.getWeight();
-		
-		if(healthNum - Integer.parseInt(healthText.getText()) > 10) {
-			//POPOX for getting sick
-		}
-		
-		
+
 		if(happyNum < 0) {
 			happinessText.setText("0");
 		}
@@ -120,7 +115,6 @@ public class TamagotchiView extends Application implements Observer{
 			allMechanics.setDisable(true);
 		}
 		if(healthNum < 1) {
-			health.setWidth(healthNum * 2);
 			controller.petDies();
 			allMechanics.setDisable(true);
 		}
@@ -147,6 +141,11 @@ public class TamagotchiView extends Application implements Observer{
 			Image newPet = new Image(controller.getSadPet());
 			pet.setImage(newPet);
 		}
+		healthStatus.setText(controller.getHealthDescription());
+		happinessStatus.setText(controller.getHappinessDescription());
+		ageText.setText("Age: " + Integer.toString(age));
+		weightStatus.setText("\t\t\t" + controller.getWeightDescription());
+		
 	}
 
 	@Override
@@ -165,7 +164,7 @@ public class TamagotchiView extends Application implements Observer{
 	
 	private VBox menuBox = new VBox(-5);
 	
-	private void addMenu(Stage primaryStage) {
+	private void addMenu(Stage primaryStage) throws FileNotFoundException {
 		menuBox.setSpacing(10);
 		menuBox.setPadding(new Insets(0,0,0,20));
 		menuBox.setAlignment(Pos.CENTER_LEFT);
@@ -214,6 +213,8 @@ public class TamagotchiView extends Application implements Observer{
 		
 		menuBox.getChildren().addAll(newGame,loadGame,quit);
 		root.setLeft(menuBox);
+		ImageView logo = new ImageView(new Image(new FileInputStream("./Pet Images/tamagotchiLogo.png")));
+		root.setCenter(logo);
 	}
 	
 	

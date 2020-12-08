@@ -228,5 +228,4 @@ public class TamagotchiModel extends Observable{
 		write.write(sadPet + "\n");
 		write.close();
 	}
-
 }
