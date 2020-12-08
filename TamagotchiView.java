@@ -1,9 +1,9 @@
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Optional;
-
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -51,6 +51,7 @@ public class TamagotchiView extends Application implements Observer{
 	ImageView pet = null;
 	VBox bottomHalf = new VBox();
 	HBox allMechanics = new HBox();
+	Button feedMedicine = new Button("Give Medicine");
 	
 	@Override
 	public void update(Observable arg0, Object arg1) {
@@ -129,11 +130,13 @@ public class TamagotchiView extends Application implements Observer{
 		}
 		if (healthNum > 60) {
 			health.setFill(Color.GREEN);
+			feedMedicine.setDisable(true);
 			if(model.isSick()) {
 				Image newPet = new Image(controller.getPet());
 				pet.setImage(newPet);
 			}
 		} else if (healthNum > 20) {
+			feedMedicine.setDisable(false);
 			health.setFill(Color.YELLOW);
 			if(model.isSick()) {
 				Image newPet = new Image(controller.getPet());
@@ -185,7 +188,19 @@ public class TamagotchiView extends Application implements Observer{
 		loadGame.setFont(Font.font(15));
 		
 		loadGame.setOnMouseClicked(e ->{
-			
+			try {
+				controller.load();
+				petImage = controller.getPet();
+				this.update(null, null);
+				Scene newScene = runGame(primaryStage);
+				primaryStage.setScene(newScene);
+				primaryStage.show();
+				controller.start();
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
 		});
 		
 		Button quit = new Button("Quit");
@@ -216,8 +231,7 @@ public class TamagotchiView extends Application implements Observer{
 		VBox imgContainer = new VBox();
 		Button feedSnacks = new Button("Feed Snacks");
 		Button feedMeal = new Button("Feed Meal");
-		Button feedMedicine = new Button("Give Medicine");
-		//Button pause = new Button("Pause");
+		feedMedicine.setDisable(true);
 		ImageView pause = new ImageView(new Image(new FileInputStream("./Pet Images/pauseButtonImg.png")));
 		try {
 			pet = new ImageView(new Image(new FileInputStream(petImage)));
@@ -262,9 +276,13 @@ public class TamagotchiView extends Application implements Observer{
 			Optional<ButtonType> result = alert.showAndWait();
 			
 			if(result.get() == saveGame) {
-				
-			} else {
-				
+				try {
+					controller.save();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}else if(result.get() == quitGame){
+				primaryStage.close();
 			}
 		});
 		

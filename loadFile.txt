@@ -1,0 +1,6 @@
+58
+44
+9
+2
+./Pet Images/transparent_mouse.png
+./Pet Images/sad_mouse.png
