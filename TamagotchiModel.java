@@ -1,4 +1,11 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Observable;
+import java.util.Scanner;
+
+import javafx.stage.FileChooser;
 
 public class TamagotchiModel extends Observable{
 	
@@ -20,6 +27,13 @@ public class TamagotchiModel extends Observable{
 	private boolean alive = true;
 	
 	private boolean paused = false;
+	
+	private boolean sick = false;
+	
+	private String pet;
+	private String sadPet;
+	
+	private File loadFile = new File("loadFile.txt");
 	
 	/**
 	 * Default constructor with standard values
@@ -139,6 +153,10 @@ public class TamagotchiModel extends Observable{
 	public int getHappiness() {
 		return happiness;
 	}
+	
+	public boolean isSick() {
+		return sick;
+	}
 
 	public boolean pauseGame() {
 		paused = true;
@@ -158,4 +176,56 @@ public class TamagotchiModel extends Observable{
 		alive = false;
 	}
 
+	public void setSick(boolean b) {
+		sick = b;
+	}
+
+	public void setPet(String pet, String sadPet) {
+		this.pet = pet;
+		this.sadPet = sadPet;
+	}
+
+	public String getSadPet() {
+		return sadPet;
+	}
+
+	public String getPet() {
+		return pet;
+	}
+	
+	public void load() throws FileNotFoundException {
+		Scanner reader = new Scanner(loadFile);
+		int pos = 0;
+		while(reader.hasNext()) {
+			if(pos == 0) {
+				health = Integer.parseInt(reader.nextLine());
+			}else if(pos == 1) {
+				weight = Integer.parseInt(reader.nextLine());
+			}else if(pos == 2) {
+				happiness = Integer.parseInt(reader.nextLine());
+			}else if(pos == 3) {
+				age = Integer.parseInt(reader.nextLine());
+			}else if(pos == 4) {
+				pet = reader.nextLine();
+			}else if(pos == 5) {
+				sadPet = reader.nextLine();
+			}
+			pos++;
+		}
+		reader.close();
+	}
+	
+	public void save() throws IOException {
+		loadFile.delete();
+		loadFile = new File("loadFile.txt");
+		loadFile.createNewFile();
+		FileWriter write = new FileWriter(loadFile);
+		write.write(health + "\n");
+		write.write(weight + "\n");
+		write.write(happiness + "\n");
+		write.write(age + "\n");
+		write.write(pet + "\n");
+		write.write(sadPet + "\n");
+		write.close();
+	}
 }

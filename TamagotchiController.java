@@ -1,9 +1,13 @@
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.concurrent.ThreadLocalRandom;
 
 
 public class TamagotchiController extends Thread {
 	
 	private TamagotchiModel model;
+	
+	private boolean paused = false;
 	
 	public TamagotchiController(TamagotchiModel model) {
 		this.model = model;
@@ -36,6 +40,15 @@ public class TamagotchiController extends Thread {
 	
 	public void giveMedicine() {
 		model.giveMedicine();
+		model.setSick(false);
+	}
+	
+	public void pause() {
+		paused = true;
+	}
+	
+	public void unPause() {
+		paused = false;
 	}
 
 	public String getAgeDescription() {
@@ -52,6 +65,7 @@ public class TamagotchiController extends Thread {
 		}
 		else {
 			descr = "(Sick)";
+			model.setSick(true);
 		}
 		return descr;
 	}
@@ -118,7 +132,7 @@ public class TamagotchiController extends Thread {
 	
 	public void run() {
 		int i = 0;
-		while(!model.isDead() && !model.isPause()) {
+		while(!model.isDead() && !paused) {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
@@ -174,4 +188,24 @@ public class TamagotchiController extends Thread {
         // Draw random from pool. If is 1, gets sick (returns true)
         return ThreadLocalRandom.current().nextInt(0, chancePool) == 1;
     }
+
+	public void setPet(String pet, String sadPet) {
+		model.setPet(pet, sadPet);
+	}
+
+	public String getSadPet() {
+		return model.getSadPet();
+	}
+
+	public String getPet() {
+		return model.getPet();
+	}
+
+	public void load() throws FileNotFoundException {
+		model.load();
+	}
+
+	public void save() throws IOException {
+		model.save();
+	}
 }
