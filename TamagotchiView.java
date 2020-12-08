@@ -55,11 +55,6 @@ public class TamagotchiView extends Application implements Observer{
 		int healthNum = controller.getHealth();
 		int weightNum = controller.getWeight();
 		
-		if(healthNum - Integer.parseInt(healthText.getText()) > 10) {
-			//POPOX for getting sick
-		}
-		
-		
 		if(happyNum < 0) {
 			happinessText.setText("0");
 		}
@@ -146,7 +141,7 @@ public class TamagotchiView extends Application implements Observer{
 	
 	private VBox menuBox = new VBox(-5);
 	
-	private void addMenu(Stage primaryStage) {
+	private void addMenu(Stage primaryStage) throws FileNotFoundException {
 		menuBox.setSpacing(10);
 		menuBox.setPadding(new Insets(0,0,0,20));
 		menuBox.setAlignment(Pos.CENTER_LEFT);
@@ -183,6 +178,8 @@ public class TamagotchiView extends Application implements Observer{
 		
 		menuBox.getChildren().addAll(newGame,loadGame,quit);
 		root.setLeft(menuBox);
+		ImageView logo = new ImageView(new Image(new FileInputStream("./Pet Images/tamagotchiLogo.png")));
+		root.setCenter(logo);
 	}
 	
 	
