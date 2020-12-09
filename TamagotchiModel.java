@@ -7,10 +7,7 @@ import java.util.Scanner;
 
 
 public class TamagotchiModel extends Observable{
-	
-	// Name of the tamagotchi
-	private String name;
-	
+		
 	// Age, starting at 0 and increasing
 	private int age;
 	
@@ -50,7 +47,6 @@ public class TamagotchiModel extends Observable{
 	 * @param happiness
 	 */
 	public TamagotchiModel(String name, int age, int health, int weight, int happiness) {
-		this.name = name;
 		this.age = age;
 		this.health = health;
 		this.weight = weight;

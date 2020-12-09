@@ -1,6 +1,6 @@
-75
-45
-40
-2
-./Pet Images/transparent_panda.png
-./Pet Images/sad_panda.png
+55
+48
+35
+5
+./Pet Images/transparent_mouse.png
+./Pet Images/sad_mouse.png
