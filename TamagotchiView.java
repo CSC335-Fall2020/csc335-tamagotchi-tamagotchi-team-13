@@ -53,14 +53,20 @@ public class TamagotchiView extends Application implements Observer{
 	HBox allMechanics = new HBox();
 	Button feedMedicine = new Button("Give Medicine");
 	Stage primaryStage = null;
-	
+
+	/**
+	 * When the model updates from the threads running in the controller, update
+	 * gets called to update all the gui animations, the color of the bars
+	 * change, and so does all the text
+	 */
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		int age = controller.getAge();
 		int happyNum = controller.getHappiness();
 		int healthNum = controller.getHealth();
 		int weightNum = controller.getWeight();
-
+		
+		// changes the text for the happiness/health/weight
 		if(happyNum < 0) {
 			happinessText.setText("0");
 		}
@@ -81,6 +87,7 @@ public class TamagotchiView extends Application implements Observer{
 			weightText.setText(Integer.toString(weightNum));
 		}
 		
+		//updates the bars
 		if (weightNum<=100 && weightNum>0) {
 			weight.setWidth(weightNum * 2);
 		} else if (weightNum <= 10 || weightNum >= 120) {
@@ -95,6 +102,7 @@ public class TamagotchiView extends Application implements Observer{
 			}	
 		}
 		
+		//update bar colors
 		if (weightNum<=60 && weightNum>=40) {
 			weight.setFill(Color.GREEN);
 		} else if ((weightNum<40 && weightNum>=20) || (weightNum>60 && weightNum<=80)) {
@@ -109,7 +117,8 @@ public class TamagotchiView extends Application implements Observer{
 			happiness.setFill(Color.YELLOW);
 		} else {
 			happiness.setFill(Color.RED);
-		}		
+		}
+		//update text descriptions
 		healthStatus.setText(controller.getHealthDescription());
 		happinessStatus.setText(controller.getHappinessDescription());
 		ageText.setText("Age: " + Integer.toString(age));
@@ -127,6 +136,7 @@ public class TamagotchiView extends Application implements Observer{
 				});
 			}
 		}
+		//check if it should die
 		if(healthNum < 1) {
 			allMechanics.setDisable(true);
 			controller.interrupt();
@@ -140,6 +150,7 @@ public class TamagotchiView extends Application implements Observer{
 		else {
 			health.setWidth(healthNum * 2);
 		}
+		//set color of the bars
 		if (healthNum > 60) {
 			health.setFill(Color.GREEN);
 			feedMedicine.setDisable(true);
@@ -168,6 +179,9 @@ public class TamagotchiView extends Application implements Observer{
 	}
 
 	@Override
+	/**
+	 * simply starts the game given the primary stage
+	 */
 	public void start(Stage primaryStage) throws Exception {
 		this.primaryStage = primaryStage;
 		model.addObserver(this);
@@ -176,6 +190,12 @@ public class TamagotchiView extends Application implements Observer{
 		this.primaryStage.show();
 	}
 	
+	/**
+	 * creates the main menu scene by calling the smaller parts that add up
+	 * 
+	 * @return the main menu scene
+	 * @throws FileNotFoundException
+	 */
 	private Scene mainMenu() throws FileNotFoundException {
 		addBackground(root);
 		addMenu();
@@ -184,6 +204,11 @@ public class TamagotchiView extends Application implements Observer{
 	
 	private VBox menuBox = new VBox(-5);
 	
+	/** 
+	 * creates the main menu scene with all the formatting/buttons/font/etc.
+	 * 
+	 * @throws FileNotFoundException
+	 */
 	private void addMenu() throws FileNotFoundException {
 		menuBox.setSpacing(10);
 		menuBox.setPadding(new Insets(0,0,0,20));
@@ -192,6 +217,7 @@ public class TamagotchiView extends Application implements Observer{
 		newGame.setPrefWidth(150);
 		newGame.setFont(Font.font(15));
 		
+		//upon clicking new game, it creates the scene for the selection
 		newGame.setOnMouseClicked(e -> {
 			try {
 				Scene newScene = tamagotchiSelection();
@@ -206,6 +232,7 @@ public class TamagotchiView extends Application implements Observer{
 		loadGame.setPrefWidth(150);
 		loadGame.setFont(Font.font(15));
 		
+		//if the game has a saved file, it can load up the game
 		loadGame.setOnMouseClicked(e ->{
 			try {
 				controller.load();
@@ -240,12 +267,22 @@ public class TamagotchiView extends Application implements Observer{
 	
 	
 	
-	
+	/**
+	 * Adds the background picture to our scenes
+	 * @param root the primary scene that we add the background photo to
+	 * @throws FileNotFoundException
+	 */
 	private void addBackground(BorderPane root) throws FileNotFoundException {
 		ImageView image = new ImageView(new Image(new FileInputStream("./Pet Images/background.jpg")));
 		root.getChildren().add(image);
 	}
 	
+	/**
+	 * Creates the main scene for the game with all the buttons and pictures
+	 * also contains all the lambda functions for the buttons
+	 * @return the scene to be displayed
+	 * @throws Exception
+	 */
 	private Scene runGame() throws Exception {
 		BorderPane newRoot = new BorderPane();
 		addBackground(newRoot);
@@ -279,6 +316,8 @@ public class TamagotchiView extends Application implements Observer{
 		
 		bottomHalf.getChildren().addAll(imgContainer,textContainer,allMechanics);
 		pause.setCursor(Cursor.HAND);
+		
+		//pauses the game and has all the functionalities
 		pause.setOnMouseClicked(e ->{
 			//stops the timer from the threading
 			//pops up alert box to either save game/resume game/ quit game
@@ -339,6 +378,11 @@ public class TamagotchiView extends Application implements Observer{
 		return newScene;
 	}
 
+	/**
+	 * Creates the tamagotchi character selection scene
+	 * @return the scene to be displayed
+	 * @throws FileNotFoundException
+	 */
 	private Scene tamagotchiSelection() throws FileNotFoundException {
 		String[] images = {"./Pet Images/transparent_panda.png", "./Pet Images/transparent_mouse.png", "./Pet Images/transparent_dog.png"};
 		String[] sadImages = {"./Pet Images/sad_panda.png", "./Pet Images/sad_mouse.png", "./Pet Images/sad_dog.png"};
@@ -349,6 +393,8 @@ public class TamagotchiView extends Application implements Observer{
 		HBox backgroundHBox = new HBox();
 		VBox confirmVBox = new VBox();
 		Button confirm = new Button("Confirm");
+		//sends which pet to be displayed on the main game and also sets up the
+		//scene for the game
 		confirm.setOnMouseClicked(e -> {
 			Scene newScene;
 			try {
@@ -394,7 +440,12 @@ public class TamagotchiView extends Application implements Observer{
 		Scene newScene = new Scene(newRoot, WIDTH, HEIGHT);
 		return newScene;
 	}
-
+	
+	/**
+	 * this is called by the main menu function so that it has all the
+	 * progress bars at the top
+	 * @param newRoot is the scene with all the progress bars
+	 */
 	private void setProgressBars(BorderPane newRoot) {
 		HBox progressBars = new HBox();
 		StackPane healthPane = new StackPane();
@@ -441,6 +492,10 @@ public class TamagotchiView extends Application implements Observer{
 		newRoot.getChildren().add(progressBars);
 	}
 	
+	/**
+	 * Creates the overlay for when the game is over, it adds the opacity, pops
+	 * up an alert box, and waits until the user clicks quit to exit the game
+	 */
 	private void gameOverMessage() {
 		primaryStage.getScene().getRoot().setOpacity(0.4);
 		ButtonType quitGame = new ButtonType("Quit Game", 

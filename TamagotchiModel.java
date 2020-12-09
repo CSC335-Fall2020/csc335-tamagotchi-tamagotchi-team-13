@@ -42,14 +42,6 @@ public class TamagotchiModel extends Observable{
 	}
 	
 	/**
-	 * Constructor with standard values, but custom name
-	 * @param name is the name of the new tamagotchi
-	 */
-	public TamagotchiModel(String name) {
-		this(name, 0, 100, 50, 75);
-	}
-	
-	/**
 	 * Constructor for loading saved wellbeing values
 	 * @param name
 	 * @param age
@@ -131,10 +123,6 @@ public class TamagotchiModel extends Observable{
 	public boolean isDead() {
 		//return !(health>0 && weight>10 && weight<120 && happiness>0);
 		return !(alive);
-	}
-
-	public String getName() {
-		return name;
 	}
 
 	public int getAge() {

@@ -189,7 +189,7 @@ public class TamagotchiController extends Thread {
      * based on the character's health, happiness, and weight.
      * @return
      */
-    private boolean shouldGetSick() {
+    public boolean shouldGetSick() {
 
         if (model.getHealth()<30) {
             return true;
