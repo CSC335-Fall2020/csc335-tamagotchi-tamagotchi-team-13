@@ -5,6 +5,7 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Optional;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -32,7 +33,6 @@ public class TamagotchiView extends Application implements Observer{
 	private static final int HEIGHT = 400;
 	private String petImage = "";
 	
-	
 	TamagotchiModel model = new TamagotchiModel();
 	TamagotchiController controller = new TamagotchiController(model);
 	BorderPane root = new BorderPane();
@@ -52,6 +52,7 @@ public class TamagotchiView extends Application implements Observer{
 	VBox bottomHalf = new VBox();
 	HBox allMechanics = new HBox();
 	Button feedMedicine = new Button("Give Medicine");
+	Stage primaryStage = null;
 	
 	@Override
 	public void update(Observable arg0, Object arg1) {
@@ -84,8 +85,14 @@ public class TamagotchiView extends Application implements Observer{
 			weight.setWidth(weightNum * 2);
 		} else if (weightNum <= 10 || weightNum >= 120) {
 			weight.setWidth(weightNum * 2);
-			controller.petDies();
 			allMechanics.setDisable(true);
+			controller.interrupt();
+			if(!controller.isDead()) {
+				controller.petDies();
+				Platform.runLater(()->{
+					gameOverMessage();
+				});
+			}	
 		}
 		
 		if (weightNum<=60 && weightNum>=40) {
@@ -111,25 +118,37 @@ public class TamagotchiView extends Application implements Observer{
 			happiness.setWidth(happyNum * 2);
 		} else if (happyNum<=0) {
 			happiness.setWidth(happyNum * 2);
-			controller.petDies();
 			allMechanics.setDisable(true);
+			controller.interrupt();
+			if(!controller.isDead()) {
+				controller.petDies();
+				Platform.runLater(()->{
+					gameOverMessage();
+				});
+			}
 		}
 		if(healthNum < 1) {
-			controller.petDies();
 			allMechanics.setDisable(true);
+			controller.interrupt();
+			if(!controller.isDead()) {
+				controller.petDies();
+				Platform.runLater(()->{
+					gameOverMessage();
+				});
+			}
 		}
 		else {
 			health.setWidth(healthNum * 2);
-
 		}
 		if (healthNum > 60) {
 			health.setFill(Color.GREEN);
 			feedMedicine.setDisable(true);
+			
 			if(model.isSick()) {
 				Image newPet = new Image(controller.getPet());
 				pet.setImage(newPet);
 			}
-		} else if (healthNum > 20) {
+		} else if (healthNum > 40) {
 			feedMedicine.setDisable(false);
 			health.setFill(Color.YELLOW);
 			if(model.isSick()) {
@@ -150,21 +169,22 @@ public class TamagotchiView extends Application implements Observer{
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		this.primaryStage = primaryStage;
 		model.addObserver(this);
-		primaryStage.setScene(mainMenu(primaryStage));
-		primaryStage.setTitle("Tamagotchi");
-		primaryStage.show();
+		this.primaryStage.setScene(mainMenu());
+		this.primaryStage.setTitle("Tamagotchi");
+		this.primaryStage.show();
 	}
 	
-	private Scene mainMenu(Stage primaryStage) throws FileNotFoundException {
+	private Scene mainMenu() throws FileNotFoundException {
 		addBackground(root);
-		addMenu(primaryStage);
+		addMenu();
 		return new Scene(root, WIDTH, HEIGHT);
 	}
 	
 	private VBox menuBox = new VBox(-5);
 	
-	private void addMenu(Stage primaryStage) throws FileNotFoundException {
+	private void addMenu() throws FileNotFoundException {
 		menuBox.setSpacing(10);
 		menuBox.setPadding(new Insets(0,0,0,20));
 		menuBox.setAlignment(Pos.CENTER_LEFT);
@@ -174,7 +194,7 @@ public class TamagotchiView extends Application implements Observer{
 		
 		newGame.setOnMouseClicked(e -> {
 			try {
-				Scene newScene = tamagotchiSelection(primaryStage);
+				Scene newScene = tamagotchiSelection();
 				primaryStage.setScene(newScene);
 				primaryStage.show();
 			} catch (Exception e1) {
@@ -191,12 +211,13 @@ public class TamagotchiView extends Application implements Observer{
 				controller.load();
 				petImage = controller.getPet();
 				this.update(null, null);
-				Scene newScene = runGame(primaryStage);
+				Scene newScene = runGame();
 				primaryStage.setScene(newScene);
 				primaryStage.show();
 				controller.start();
 			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
+				Alert noFile = new Alert(AlertType.ERROR,"No Saved Game, Start New Game");
+				noFile.showAndWait();
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -225,7 +246,7 @@ public class TamagotchiView extends Application implements Observer{
 		root.getChildren().add(image);
 	}
 	
-	private Scene runGame(Stage primaryStage) throws Exception {
+	private Scene runGame() throws Exception {
 		BorderPane newRoot = new BorderPane();
 		addBackground(newRoot);
 		VBox textContainer = new VBox();
@@ -262,6 +283,7 @@ public class TamagotchiView extends Application implements Observer{
 			//stops the timer from the threading
 			//pops up alert box to either save game/resume game/ quit game
 			controller.pause();
+			primaryStage.getScene().getRoot().setOpacity(0.4);
 			ButtonType saveGame = new ButtonType("Save Game", 
 					ButtonBar.ButtonData.OK_DONE);
 			ButtonType resumeGame = new ButtonType("Resume Game", 
@@ -281,14 +303,16 @@ public class TamagotchiView extends Application implements Observer{
 				try {
 					controller.save();
 					controller.resumeGame();
+					primaryStage.getScene().getRoot().setOpacity(1);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
-			}else if(result.get() == quitGame){				
+			}else if(result.get() == quitGame){	
 				primaryStage.close();
 			}
 			else if(result.get() == resumeGame) {
 				controller.resumeGame();
+				primaryStage.getScene().getRoot().setOpacity(1);
 			}
 		});
 		
@@ -315,7 +339,7 @@ public class TamagotchiView extends Application implements Observer{
 		return newScene;
 	}
 
-	private Scene tamagotchiSelection(Stage primaryStage) throws FileNotFoundException {
+	private Scene tamagotchiSelection() throws FileNotFoundException {
 		String[] images = {"./Pet Images/transparent_panda.png", "./Pet Images/transparent_mouse.png", "./Pet Images/transparent_dog.png"};
 		String[] sadImages = {"./Pet Images/sad_panda.png", "./Pet Images/sad_mouse.png", "./Pet Images/sad_dog.png"};
 		String[] buttons = {"Panda", "Mouse", "Dog"};
@@ -328,7 +352,7 @@ public class TamagotchiView extends Application implements Observer{
 		confirm.setOnMouseClicked(e -> {
 			Scene newScene;
 			try {
-				newScene = runGame(primaryStage);
+				newScene = runGame();
 				primaryStage.setScene(newScene);
 				controller.start();
 			} catch (Exception e1) {
@@ -409,7 +433,6 @@ public class TamagotchiView extends Application implements Observer{
 		happinessVBox.setPadding(new Insets(0, 100, 100, 0));
 		progressBars.getChildren().add(happinessVBox);
 		
-		//
 		happinessText.setFill(Color.LIGHTGRAY);
 		weightText.setFill(Color.LIGHTGRAY);
 		healthText.setFill(Color.LIGHTGRAY);
@@ -418,4 +441,17 @@ public class TamagotchiView extends Application implements Observer{
 		newRoot.getChildren().add(progressBars);
 	}
 	
+	private void gameOverMessage() {
+		primaryStage.getScene().getRoot().setOpacity(0.4);
+		ButtonType quitGame = new ButtonType("Quit Game", 
+				ButtonBar.ButtonData.CANCEL_CLOSE);
+		Alert endGame = new Alert(AlertType.INFORMATION,"Game Over",quitGame);
+		endGame.setTitle("Game Over");
+		endGame.setHeaderText("Game Over");
+		Optional<ButtonType> result = endGame.showAndWait();
+		if(result.get() == quitGame){
+			endGame.close();
+			primaryStage.close();
+		}
+	}
 }

@@ -156,16 +156,6 @@ public class TamagotchiModel extends Observable{
 	public boolean isSick() {
 		return sick;
 	}
-
-	public boolean pauseGame() {
-		paused = true;
-		return paused;
-	}
-	
-	public boolean unpauseGame() {
-		paused = false;
-		return paused;
-	}
 	
 	public boolean isPause() {
 		return paused;

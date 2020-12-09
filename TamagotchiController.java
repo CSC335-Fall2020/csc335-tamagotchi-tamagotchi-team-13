@@ -147,7 +147,7 @@ public class TamagotchiController extends Thread {
 
 			
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(2000);
 				try {
 					model.save();
 				} catch (IOException e) {
@@ -157,7 +157,7 @@ public class TamagotchiController extends Thread {
 			    Thread.currentThread().interrupt();
 			}
 			
-			if(i % 5 == 0) {
+			if(i % 3 == 0) {
 				model.increaseAge(1);
 			}
 			int amtToDecreaseHealth = 2;
@@ -172,6 +172,8 @@ public class TamagotchiController extends Thread {
 			model.decreaseWeight(1);
 			i++;
 		}
+		
+		
 	}
 	
 	public void resumeGame() {
@@ -232,5 +234,8 @@ public class TamagotchiController extends Thread {
 
 	public void save() throws IOException {
 		model.save();
+	}
+	public boolean isDead() {
+		return model.isDead();
 	}
 }
