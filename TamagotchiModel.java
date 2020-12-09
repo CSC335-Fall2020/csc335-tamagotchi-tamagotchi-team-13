@@ -79,6 +79,10 @@ public class TamagotchiModel extends Observable{
 		notifyObservers();
 	}
 	
+	/**
+	 * Adds weight and happiness whenever the user wants to feed the
+	 * pet a snack
+	 */
 	public void feedPetSnacks() {
 		weight+=5;
 		happiness+=5;
@@ -88,13 +92,19 @@ public class TamagotchiModel extends Observable{
 		setChanged();
 		notifyObservers();
 	}
-	
+	/**
+	 * Adds weightwhenever the user wants to feed the
+	 * pet a meal
+	 */
 	public void feedPetMeal() {
 		weight+=2;
 		setChanged();
 		notifyObservers();
 	}
 	
+	/**
+	 * Give medicine to your tamagotchi whenever the pet is sick
+	 */
 	public void giveMedicine() {
 		health+=10;
 		if(health>100) {
@@ -104,12 +114,20 @@ public class TamagotchiModel extends Observable{
 		notifyObservers();
 	}
 	
+	/**
+	 * Decrease the weight by the given amount
+	 * @param decreaseAmount the number we want to decrease the weight by
+	 */
 	public void decreaseWeight(int decreaseAmount) {
 		weight -= decreaseAmount;
 		setChanged();
 		notifyObservers();
 	}
 	
+	/**
+	 * decrease the happiness by the given amount
+	 * @param amtToDecreaseHappiness the number we want to decrease the happiness by
+	 */
 	public void decreaseHappiness(int amtToDecreaseHappiness) {
 		happiness -= amtToDecreaseHappiness;
 		setChanged();
@@ -125,51 +143,99 @@ public class TamagotchiModel extends Observable{
 		return !(alive);
 	}
 
+	/**
+	 * gets the age
+	 * @return age
+	 */
 	public int getAge() {
 		return age;
 	}
-
+	
+	/**
+	 * gets the health
+	 * @return health
+	 */
 	public int getHealth() {
 		return health;
 	}
-
+	
+	/**
+	 * gets the weight
+	 * @return weight
+	 */
 	public int getWeight() {
 		return weight;
 	}
-
+	
+	/**
+	 * gets the happiness
+	 * @return happiness
+	 */
 	public int getHappiness() {
 		return happiness;
 	}
 	
+	/**
+	 * returns if the pet is sick
+	 * @return sick
+	 */
 	public boolean isSick() {
 		return sick;
 	}
 	
+	/**
+	 * returns a boolea of if the game is paused or not
+	 * @return paused
+	 */
 	public boolean isPause() {
 		return paused;
 	}
 
+	/**
+	 * makes the pet die by setting the alive status to false
+	 */
 	public void petDies() {
 		alive = false;
 	}
-
+	
+	/**
+	 * sets the sickness of the pet
+	 * @param b the boolean of if it is sick, can be true or false
+	 */
 	public void setSick(boolean b) {
 		sick = b;
 	}
 
+	/**
+	 * set the image of the pet
+	 * @param pet the image location of the regular pet
+	 * @param sadPet the image location of the sad pet
+	 */
 	public void setPet(String pet, String sadPet) {
 		this.pet = pet;
 		this.sadPet = sadPet;
 	}
 
+	/**
+	 * gets the sadPet image location
+	 * @return the image location of the sad pet
+	 */
 	public String getSadPet() {
 		return sadPet;
 	}
-
+	
+	/**
+	 * gets the regular pet image location
+	 * @return the image location of the regular looking pet
+	 */
 	public String getPet() {
 		return pet;
 	}
 	
+	/**
+	 * loads the game into the model by setting the happiness/age/etc
+	 * @throws FileNotFoundException
+	 */
 	public void load() throws FileNotFoundException {
 		Scanner reader = new Scanner(loadFile);
 		int pos = 0;
@@ -192,6 +258,10 @@ public class TamagotchiModel extends Observable{
 		reader.close();
 	}
 	
+	/**
+	 * saves all the stats into a file to be written out
+	 * @throws IOException
+	 */
 	public void save() throws IOException {
 		loadFile.delete();
 		loadFile = new File("loadFile.txt");
